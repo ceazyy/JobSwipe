@@ -1,6 +1,6 @@
 # JobSwipe
 
-A Tinder-like application for job matching where users can swipe on jobs and get matched with companies.
+A Tinder-like application for job matching where users can swipe on jobs and get matched with companies. (STILL IN DEVELOPMENT)
 
 ## Features
 
