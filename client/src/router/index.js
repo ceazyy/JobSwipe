@@ -1,76 +1,79 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { useAuthStore } from '../stores/auth';
+import { useAuthStore } from '@/stores/auth';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      redirect: '/swipe'
+      name: 'home',
+      component: () => import('@/views/HomeView.vue')
     },
     {
       path: '/login',
       name: 'login',
-      component: () => import('../views/Login.vue'),
+      component: () => import('@/views/LoginView.vue'),
       meta: { requiresGuest: true }
     },
     {
       path: '/register',
       name: 'register',
-      component: () => import('../views/Register.vue'),
+      component: () => import('@/views/RegisterView.vue'),
       meta: { requiresGuest: true }
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('@/views/ProfileView.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/swipe',
       name: 'swipe',
-      component: () => import('../views/Swipe.vue'),
+      component: () => import('@/views/SwipeView.vue'),
       meta: { requiresAuth: true }
     },
     {
       path: '/matches',
       name: 'matches',
-      component: () => import('../views/Matches.vue'),
+      component: () => import('@/views/MatchesView.vue'),
       meta: { requiresAuth: true }
     },
     {
-      path: '/profile',
-      name: 'profile',
-      component: () => import('../views/Profile.vue'),
+      path: '/settings',
+      name: 'settings',
+      component: () => import('@/views/SettingsView.vue'),
       meta: { requiresAuth: true }
     },
     {
-      path: '/resume',
-      name: 'resume',
-      component: () => import('../views/Resume.vue'),
-      meta: { requiresAuth: true }
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('@/views/NotFoundView.vue')
     }
   ]
 });
 
+// Navigation guard
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
   
-  // If the route requires authentication
-  if (to.meta.requiresAuth) {
-    // Check if user is authenticated
-    if (!authStore.isAuthenticated) {
-      // If not authenticated, redirect to login
-      next({ name: 'login' });
-      return;
-    }
+  // Wait for auth store to be initialized if it hasn't been yet
+  if (!authStore.isInitialized) {
+    await authStore.initialize();
   }
-  
-  // If the route requires guest (non-authenticated) access
-  if (to.meta.requiresGuest) {
-    // Check if user is authenticated
-    if (authStore.isAuthenticated) {
-      // If authenticated, redirect to home
-      next({ name: 'swipe' });
-      return;
-    }
+
+  // Check if route requires authentication
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    next({ name: 'login', query: { redirect: to.fullPath } });
+    return;
   }
-  
-  // Allow navigation in all other cases
+
+  // Check if route requires guest (non-authenticated) access
+  if (to.meta.requiresGuest && authStore.isAuthenticated) {
+    next({ name: 'home' });
+    return;
+  }
+
   next();
 });
 

@@ -8,11 +8,11 @@ import './assets/main.css';
 import { useAuthStore } from './stores/auth';
 
 const app = createApp(App);
-const pinia = createPinia();
 
+// Configure toast options
 const toastOptions = {
   position: 'top-right',
-  timeout: 3000,
+  timeout: 5000,
   closeOnClick: true,
   pauseOnFocusLoss: true,
   pauseOnHover: true,
@@ -25,12 +25,13 @@ const toastOptions = {
   rtl: false
 };
 
-app.use(pinia);
+// Initialize plugins
+app.use(createPinia());
 app.use(router);
 app.use(Toast, toastOptions);
 
-// Initialize auth store before mounting the app
-const authStore = useAuthStore(pinia);
-authStore.initialize().then(() => {
-  app.mount('#app');
-}); 
+// Initialize auth store before mounting
+const authStore = useAuthStore();
+await authStore.initialize();
+
+app.mount('#app'); 

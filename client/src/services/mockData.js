@@ -84,6 +84,13 @@ export const mockMatches = [
   }
 ];
 
+// Mock resume statistics
+export const mockResumeStats = {
+  views: 156,
+  downloads: 23,
+  matches: 8
+};
+
 // Mock API functions
 export const mockApi = {
   // Get jobs for swiping
@@ -105,6 +112,33 @@ export const mockApi = {
   // Update user profile
   updateProfile: (profileData) => {
     console.log('Updating profile:', profileData);
+    return Promise.resolve({ success: true });
+  },
+  
+  // Get resume statistics
+  getResumeStats: () => {
+    return Promise.resolve(mockResumeStats);
+  },
+  
+  // Upload resume
+  uploadResume: (file) => {
+    console.log('Uploading resume:', file);
+    return Promise.resolve({
+      success: true,
+      path: '/uploads/resume.pdf',
+      uploadDate: new Date().toISOString()
+    });
+  },
+  
+  // Download resume
+  downloadResume: () => {
+    console.log('Downloading resume');
+    return Promise.resolve({ success: true });
+  },
+  
+  // Delete resume
+  deleteResume: () => {
+    console.log('Deleting resume');
     return Promise.resolve({ success: true });
   }
 }; 
