@@ -1,76 +1,127 @@
 # JobSwipe
 
-A Tinder-like application for job matching where users can swipe on jobs and get matched with companies. (STILL IN DEVELOPMENT)
+A modern job application platform built with React, Express, and TypeScript.
 
-## Features
+## 🚀 Features
 
-- User profile creation with job application details
-- Job swiping interface
-- Real-time notifications
-- AI-powered job application automation
-- Company matching system
-- Advanced filtering options
+- Modern React-based frontend with TypeScript
+- Express.js backend with TypeScript
+- Authentication system using Passport.js
+- Real-time updates using WebSocket
+- Database integration with Drizzle ORM
+- Beautiful UI components using Radix UI and Tailwind CSS
+- Form handling with React Hook Form and Zod validation
+- Responsive design with modern animations
 
-## Tech Stack
+## 🛠️ Tech Stack
 
-- Frontend: Vue.js 3 + Vite
-- Backend: Node.js + Express
-- Database: MongoDB
-- Real-time: Socket.IO
-- Authentication: JWT
-- AI Integration: OpenAI API
+### Frontend
+- React 18
+- TypeScript
+- Vite
+- Tailwind CSS
+- Radix UI Components
+- React Query
+- React Hook Form
+- Zod
+- Framer Motion
+- Wouter (Routing)
 
-## Project Structure
+### Backend
+- Express.js
+- TypeScript
+- Passport.js (Authentication)
+- Drizzle ORM
+- WebSocket
+- Express Session
+- Multer (File uploads)
 
+## 📦 Installation
+
+1. Clone the repository:
+```bash
+git clone [repository-url]
+cd JobSwipe
 ```
-jobswipe/
-├── client/             # Vue.js frontend
-├── server/             # Node.js backend
-├── shared/             # Shared types and utilities
-└── docs/              # Documentation
-```
 
-## Setup Instructions
-
-### Prerequisites
-
-- Node.js (v16 or higher)
-- MongoDB
-- npm or yarn
-
-### Installation
-
-1. Clone the repository
 2. Install dependencies:
-   ```bash
-   # Install backend dependencies
-   cd server
-   npm install
-
-   # Install frontend dependencies
-   cd ../client
-   npm install
-   ```
+```bash
+npm install
+```
 
 3. Set up environment variables:
-   - Create `.env` files in both client and server directories
-   - Add necessary API keys and configuration
+Create a `.env` file in the root directory with necessary environment variables.
 
-4. Start the development servers:
-   ```bash
-   # Start backend server
-   cd server
-   npm run dev
+4. Initialize the database:
+```bash
+npm run db:push
+```
 
-   # Start frontend server
-   cd ../client
-   npm run dev
-   ```
+## 🚀 Development
+
+To start the development server:
+
+```bash
+npm run dev
+```
+
+This will start both the frontend and backend servers in development mode.
+
+## 🏗️ Building for Production
+
+To build the application for production:
+
+```bash
+npm run build
+```
+
+To start the production server:
+
+```bash
+npm start
+```
+
+## 📁 Project Structure
+
+```
+JobSwipe/
+├── client/                 # Frontend React application
+│   ├── src/               # Source files
+│   └── index.html         # Entry HTML file
+├── server/                # Backend Express application
+│   ├── index.ts          # Server entry point
+│   ├── auth.ts           # Authentication logic
+│   ├── routes.ts         # API routes
+│   ├── db.ts             # Database configuration
+│   └── storage.ts        # File storage handling
+├── shared/               # Shared types and utilities
+├── package.json          # Project dependencies and scripts
+├── tsconfig.json         # TypeScript configuration
+├── vite.config.ts        # Vite configuration
+└── tailwind.config.ts    # Tailwind CSS configuration
+```
+
+## 📝 Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm start` - Start production server
+- `npm run check` - Type check the codebase
+- `npm run db:push` - Push database schema changes
+
+## 🔒 Environment Variables
+
+Create a `.env` file with the following variables:
+
+```
+DATABASE_URL=your_database_url
+SESSION_SECRET=your_session_secret
+```
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contributing
 
-Please read CONTRIBUTING.md for details on our code of conduct and the process for submitting pull requests.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE.md file for details 
+Please read CONTRIBUTING.md for details on our code of conduct and the process for submitting pull requests. 
