@@ -1,6 +1,6 @@
 # JobSwipe
 
-A modern job application platform built with React, Express, and TypeScript.
+A modern job application platform built with React, Express, and TypeScript. (it's under development, please contribute accordingly)
 
 ## 🚀 Features
 
