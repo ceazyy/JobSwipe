@@ -46,6 +46,10 @@ export const jobs = pgTable("jobs", {
   postedAt: timestamp("posted_at").defaultNow(),
   companyImage: text("company_image"),
   companyBackground: text("company_background"),
+  applicationUrl: text("application_url"),
+  source: text("source"), // LinkedIn, Indeed, Naukri, etc.
+  sourceJobId: text("source_job_id"), // ID of the job in the source platform
+  lastUpdated: timestamp("last_updated").defaultNow(),
 });
 
 export const insertJobSchema = createInsertSchema(jobs).pick({
@@ -59,6 +63,9 @@ export const insertJobSchema = createInsertSchema(jobs).pick({
   requirements: true,
   companyImage: true,
   companyBackground: true,
+  applicationUrl: true,
+  source: true,
+  sourceJobId: true,
 });
 
 // Swipes (job interactions)

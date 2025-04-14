@@ -14,10 +14,18 @@ import {
   insertSkillSchema,
 } from "@shared/schema";
 import { setupAuth } from "./auth";
+import jobRoutes from "./routes/job-routes";
+import aiRoutes from "./routes/ai-routes";
+import { WebSocketServer } from "ws";
+import { scheduleJobUpdates } from "./services/jobAggregator";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up authentication
   setupAuth(app);
+  
+  // Use job routes and AI routes
+  app.use(jobRoutes);
+  app.use('/api/ai', aiRoutes);
   // Configure multer for file uploads
   const uploadDir = path.join(process.cwd(), "uploads");
   
@@ -445,5 +453,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
   }
 
   const httpServer = createServer(app);
+  
+  // Set up WebSocket server for real-time updates
+  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+  
+  wss.on('connection', (ws) => {
+    console.log('Client connected to WebSocket');
+    
+    ws.on('message', (message) => {
+      try {
+        const data = JSON.parse(message.toString());
+        console.log('Received message:', data);
+        
+        // Handle different message types
+        if (data.type === 'job_search') {
+          // Client is searching for jobs
+          console.log('Client searching for jobs with filters:', data.filters);
+          // In a production environment, we would send real-time job updates
+        } else if (data.type === 'application_status') {
+          // Client wants updates on an application
+          console.log('Client requesting application status for job:', data.jobId);
+          // In a production environment, we would send real-time status updates
+        }
+      } catch (error) {
+        console.error('Error processing WebSocket message:', error);
+      }
+    });
+    
+    ws.on('close', () => {
+      console.log('Client disconnected from WebSocket');
+    });
+  });
+  
+  // Schedule job updates to run every hour
+  scheduleJobUpdates(60);
+  
   return httpServer;
 }

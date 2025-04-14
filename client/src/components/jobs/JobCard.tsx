@@ -1,6 +1,8 @@
 import { Job } from "@shared/schema";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import JobMatchInfo from "./JobMatchInfo";
+import { ArrowDown } from "lucide-react"; 
 
 interface JobCardProps {
   job: Job;
@@ -11,6 +13,7 @@ interface JobCardProps {
 
 const JobCard = ({ job, index, onSwipe, style }: JobCardProps) => {
   const [swipeDirection, setSwipeDirection] = useState<null | "left" | "right">(null);
+  const [showDetails, setShowDetails] = useState(false);
   
   const handleSwipe = (direction: "left" | "right") => {
     setSwipeDirection(direction);
@@ -100,6 +103,30 @@ const JobCard = ({ job, index, onSwipe, style }: JobCardProps) => {
             <div className="text-sm text-neutral-500">{job.location}</div>
           )}
         </div>
+        
+        {/* Show the AI match analysis button */}
+        <div 
+          className="mt-4 flex justify-center items-center gap-1 py-2 rounded-md bg-neutral-100 hover:bg-neutral-200 cursor-pointer transition-colors"
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowDetails(!showDetails);
+          }}
+        >
+          <span className="text-sm font-medium text-neutral-700">
+            {showDetails ? "Hide AI Analysis" : "Show AI Match Analysis"}
+          </span>
+          <ArrowDown 
+            size={16} 
+            className={`text-neutral-700 transition-transform ${showDetails ? "rotate-180" : ""}`} 
+          />
+        </div>
+        
+        {/* AI match analysis */}
+        {showDetails && (
+          <div className="mt-4" onClick={(e) => e.stopPropagation()}>
+            <JobMatchInfo job={job} />
+          </div>
+        )}
       </div>
     </motion.div>
   );

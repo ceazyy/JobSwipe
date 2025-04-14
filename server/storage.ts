@@ -5,6 +5,14 @@ import {
   Skill, InsertSkill
 } from "@shared/schema";
 
+export interface JobFilters {
+  source?: string;
+  jobType?: string;
+  location?: string;
+  remote?: boolean;
+  search?: string;
+}
+
 export interface IStorage {
   // Users
   getUser(id: number): Promise<User | undefined>;
@@ -14,7 +22,7 @@ export interface IStorage {
   
   // Jobs
   getJob(id: number): Promise<Job | undefined>;
-  getJobs(): Promise<Job[]>;
+  getJobs(filters?: JobFilters): Promise<Job[]>;
   createJob(job: InsertJob): Promise<Job>;
   
   // Swipes
@@ -178,7 +186,20 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentUserId++;
-    const user: User = { ...insertUser, id };
+    const user: User = { 
+      ...insertUser, 
+      id,
+      firstName: insertUser.firstName || null,
+      lastName: insertUser.lastName || null,
+      email: insertUser.email || null,
+      phone: insertUser.phone || null,
+      title: insertUser.title || null,
+      location: insertUser.location || null,
+      about: insertUser.about || null,
+      profileImage: insertUser.profileImage || null,
+      resumePath: null,
+      resumeUpdatedAt: null
+    };
     this.users.set(id, user);
     return user;
   }
@@ -197,14 +218,61 @@ export class MemStorage implements IStorage {
     return this.jobs.get(id);
   }
 
-  async getJobs(): Promise<Job[]> {
-    return Array.from(this.jobs.values());
+  async getJobs(filters?: JobFilters): Promise<Job[]> {
+    let jobs = Array.from(this.jobs.values());
+    
+    if (filters) {
+      // Apply filters
+      if (filters.source) {
+        jobs = jobs.filter(job => job.source === filters.source);
+      }
+      
+      if (filters.jobType) {
+        jobs = jobs.filter(job => job.jobType === filters.jobType);
+      }
+      
+      if (filters.location) {
+        jobs = jobs.filter(job => job.location && job.location.toLowerCase().includes(filters.location!.toLowerCase()));
+      }
+      
+      if (filters.remote !== undefined) {
+        jobs = jobs.filter(job => job.remote === filters.remote);
+      }
+      
+      if (filters.search) {
+        const searchTerms = filters.search.toLowerCase();
+        jobs = jobs.filter(job => 
+          (job.title && job.title.toLowerCase().includes(searchTerms)) ||
+          (job.company && job.company.toLowerCase().includes(searchTerms)) ||
+          (job.description && job.description.toLowerCase().includes(searchTerms))
+        );
+      }
+    }
+    
+    return jobs;
   }
 
   async createJob(insertJob: InsertJob): Promise<Job> {
     const id = this.currentJobId++;
     const now = new Date();
-    const job: Job = { ...insertJob, id, postedAt: now };
+    const job: Job = { 
+      ...insertJob, 
+      id, 
+      postedAt: now,
+      lastUpdated: now,
+      // Set default values for optional fields
+      location: insertJob.location || null,
+      salary: insertJob.salary || null,
+      jobType: insertJob.jobType || null,
+      remote: insertJob.remote || false,
+      description: insertJob.description || null,
+      requirements: insertJob.requirements || null,
+      companyImage: insertJob.companyImage || null,
+      companyBackground: insertJob.companyBackground || null,
+      applicationUrl: insertJob.applicationUrl || null,
+      source: insertJob.source || "internal",
+      sourceJobId: insertJob.sourceJobId || `internal-${id}`
+    };
     this.jobs.set(id, job);
     return job;
   }
