@@ -1,127 +1,70 @@
+
 # JobSwipe
 
-A modern job application platform built with React, Express, and TypeScript. (it's under development, please contribute accordingly)
+A modern job application platform that helps users find and apply to jobs using AI-powered matching.
 
-## 🚀 Features
+## Features
 
-- Modern React-based frontend with TypeScript
-- Express.js backend with TypeScript
-- Authentication system using Passport.js
-- Real-time updates using WebSocket
-- Database integration with Drizzle ORM
-- Beautiful UI components using Radix UI and Tailwind CSS
-- Form handling with React Hook Form and Zod validation
-- Responsive design with modern animations
+- **Job Swiping**: Tinder-style interface for job searching
+- **AI-Powered Matching**: Smart job recommendations based on your profile
+- **Resume Analysis**: AI analysis of your resume to extract skills and suggest improvements
+- **Interview Preparation**: Get customized interview tips and common questions
+- **Multi-Source Job Aggregation**: Jobs aggregated from LinkedIn, Indeed, and Naukri
+- **Profile Management**: Manage your professional profile, work experience, and education
+- **Mobile-Friendly**: Responsive design that works on all devices
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-### Frontend
-- React 18
-- TypeScript
-- Vite
-- Tailwind CSS
-- Radix UI Components
-- React Query
-- React Hook Form
-- Zod
-- Framer Motion
-- Wouter (Routing)
+- **Frontend**: React, TypeScript, Tailwind CSS, shadcn/ui
+- **Backend**: Express.js, TypeScript
+- **Database**: PostgreSQL with Drizzle ORM
+- **AI Integration**: OpenAI GPT-4 for job analysis and matching
+- **Job Scraping**: Puppeteer for job aggregation
 
-### Backend
-- Express.js
-- TypeScript
-- Passport.js (Authentication)
-- Drizzle ORM
-- WebSocket
-- Express Session
-- Multer (File uploads)
+## Getting Started
 
-## 📦 Installation
-
-1. Clone the repository:
-```bash
-git clone [repository-url]
-cd JobSwipe
-```
-
+1. Clone the repository in Replit
 2. Install dependencies:
 ```bash
 npm install
 ```
-
-3. Set up environment variables:
-Create a `.env` file in the root directory with necessary environment variables.
-
-4. Initialize the database:
-```bash
-npm run db:push
-```
-
-## 🚀 Development
-
-To start the development server:
-
+3. Start the development server:
 ```bash
 npm run dev
 ```
+4. Open the application on port 5000
 
-This will start both the frontend and backend servers in development mode.
-
-## 🏗️ Building for Production
-
-To build the application for production:
-
-```bash
-npm run build
-```
-
-To start the production server:
-
-```bash
-npm start
-```
-
-## 📁 Project Structure
+## Project Structure
 
 ```
-JobSwipe/
-├── client/                 # Frontend React application
-│   ├── src/               # Source files
-│   └── index.html         # Entry HTML file
-├── server/                # Backend Express application
-│   ├── index.ts          # Server entry point
-│   ├── auth.ts           # Authentication logic
-│   ├── routes.ts         # API routes
-│   ├── db.ts             # Database configuration
-│   └── storage.ts        # File storage handling
-├── shared/               # Shared types and utilities
-├── package.json          # Project dependencies and scripts
-├── tsconfig.json         # TypeScript configuration
-├── vite.config.ts        # Vite configuration
-└── tailwind.config.ts    # Tailwind CSS configuration
+├── client/          # React frontend
+├── server/          # Express backend
+├── shared/          # Shared TypeScript types
+└── uploads/         # File uploads directory
 ```
 
-## 📝 Available Scripts
+## Features in Detail
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm start` - Start production server
-- `npm run check` - Type check the codebase
-- `npm run db:push` - Push database schema changes
+### Job Search
+- Swipe interface for job discovery
+- AI-powered job matching
+- Multi-source job aggregation
+- Remote job filtering
 
-## 🔒 Environment Variables
+### Profile Management
+- Professional profile creation
+- Work experience tracking
+- Education history
+- Skills management
+- Resume upload and analysis
 
-Create a `.env` file with the following variables:
+### AI Features
+- Job requirement analysis
+- Resume improvement suggestions
+- Interview preparation tips
+- Application optimization
+- Skills extraction
 
-```
-DATABASE_URL=your_database_url
-SESSION_SECRET=your_session_secret
-```
+## License
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Contributing
-
-Please read CONTRIBUTING.md for details on our code of conduct and the process for submitting pull requests. 
+MIT
