@@ -1,3 +1,7 @@
+![image](https://github.com/user-attachments/assets/fae870a6-bcb5-49ab-881c-4e751e208161)
+
+![image](https://github.com/user-attachments/assets/69ee864f-759a-4701-92ab-38fc4e6f8d01)
+
 
 # JobSwipe
 
