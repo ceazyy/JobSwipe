@@ -455,34 +455,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
   
   // Set up WebSocket server for real-time updates
-  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+  const wss = new WebSocketServer({ 
+    server: httpServer, 
+    path: '/ws',
+    clientTracking: true,
+    perMessageDeflate: false
+  });
   
-  wss.on('connection', (ws) => {
-    console.log('Client connected to WebSocket');
+  wss.on('connection', (ws, req) => {
+    console.log('Client connected to WebSocket from:', req.socket.remoteAddress);
+    
+    ws.send(JSON.stringify({ type: 'connection', status: 'connected' }));
     
     ws.on('message', (message) => {
       try {
         const data = JSON.parse(message.toString());
         console.log('Received message:', data);
         
-        // Handle different message types
         if (data.type === 'job_search') {
-          // Client is searching for jobs
           console.log('Client searching for jobs with filters:', data.filters);
-          // In a production environment, we would send real-time job updates
+          ws.send(JSON.stringify({ 
+            type: 'job_search_ack',
+            status: 'processing',
+            filters: data.filters
+          }));
         } else if (data.type === 'application_status') {
-          // Client wants updates on an application
           console.log('Client requesting application status for job:', data.jobId);
-          // In a production environment, we would send real-time status updates
+          ws.send(JSON.stringify({ 
+            type: 'application_status_ack',
+            status: 'processing',
+            jobId: data.jobId
+          }));
         }
       } catch (error) {
         console.error('Error processing WebSocket message:', error);
+        ws.send(JSON.stringify({ 
+          type: 'error',
+          message: 'Failed to process message'
+        }));
       }
+    });
+    
+    ws.on('error', (error) => {
+      console.error('WebSocket error:', error);
     });
     
     ws.on('close', () => {
       console.log('Client disconnected from WebSocket');
     });
+  });
+  
+  wss.on('error', (error) => {
+    console.error('WebSocket server error:', error);
   });
   
   // Schedule job updates to run every hour

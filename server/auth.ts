@@ -1,6 +1,6 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
-import { Express } from "express";
+import { Express, Request, Response, NextFunction } from "express";
 import session from "express-session";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
@@ -9,9 +9,14 @@ import { User } from "@shared/schema";
 import connectPg from "connect-pg-simple";
 import { pool } from "./db";
 
+// Define extended User type with password
+interface UserWithPassword extends User {
+  password: string;
+}
+
 declare global {
   namespace Express {
-    interface User extends User {}
+    interface User extends UserWithPassword {}
   }
 }
 
@@ -32,10 +37,16 @@ async function comparePasswords(supplied: string, stored: string) {
 
 const PostgresSessionStore = connectPg(session);
 
+interface CSRFError extends Error {
+  code: string;
+}
+
 export function setupAuth(app: Express) {
   const sessionStore = new PostgresSessionStore({
     pool,
     createTableIfMissing: true,
+    tableName: 'sessions',
+    pruneSessionInterval: 60,
   });
 
   const sessionSettings: session.SessionOptions = {
@@ -46,16 +57,30 @@ export function setupAuth(app: Express) {
     cookie: {
       maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
       secure: process.env.NODE_ENV === "production",
-    }
+      httpOnly: true,
+      sameSite: 'lax',
+      path: '/'
+    },
+    name: 'jobswipe.sid'
   };
 
-  app.set("trust proxy", 1);
+  if (process.env.NODE_ENV === "production") {
+    app.set("trust proxy", 1);
+  }
+
   app.use(session(sessionSettings));
   app.use(passport.initialize());
   app.use(passport.session());
 
+  app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    if ((err as CSRFError).code === 'EBADCSRFTOKEN') {
+      return res.status(403).json({ message: 'Invalid CSRF token' });
+    }
+    next(err);
+  });
+
   passport.use(
-    new LocalStrategy(async (username, password, done) => {
+    new LocalStrategy(async (username: string, password: string, done: (error: Error | null, user?: UserWithPassword | false, info?: { message: string }) => void) => {
       try {
         const user = await storage.getUserByUsername(username);
         if (!user) {
@@ -69,7 +94,8 @@ export function setupAuth(app: Express) {
         
         return done(null, user);
       } catch (error) {
-        return done(error);
+        console.error('Authentication error:', error);
+        return done(error instanceof Error ? error : new Error('Authentication failed'));
       }
     }),
   );
